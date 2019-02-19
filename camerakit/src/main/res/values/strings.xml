@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CameraKit</string>
+    <string name="text_slicejobs_hint">小零提示</string>
+    <string name="i_know">我知道了</string>
+    <!-- 图像文件夹 -->
+    <string name="Image">Image</string>
+    <!-- 缩略图文件夹 -->
+    <string name="Thumbnail">Thumbnail</string>
+    <!-- 视频文件夹 -->
+    <string name="Video">Video</string>
+    <!-- 照片暗拍提示 -->
+    <string name="camera_hide_help_text_photo">点击一键隐藏按钮进入黑屏拍照，黑屏后可按音量键+进行拍照(不要手动锁屏)</string>
+    <!-- 视频暗拍提示 -->
+    <string name="camera_hide_help_text_video">点击开始视频拍摄后，可点击一键隐藏按钮进入黑屏录制</string>
+</resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CameraView">
+
+        <attr format="enum" name="ckFacing">
+            <enum name="back" value="0"/>
+            <enum name="front" value="1"/>
+        </attr>
+
+        <attr format="enum" name="ckFlash">
+            <enum name="off" value="0"/>
+            <enum name="on" value="1"/>
+            <enum name="auto" value="2"/>
+            <enum name="torch" value="3"/>
+        </attr>
+
+        <attr format="enum" name="ckFocus">
+            <enum name="off" value="0"/>
+            <enum name="continuous" value="1"/>
+            <enum name="tap" value="2"/>
+            <enum name="tapWithMarker" value="3"/>
+        </attr>
+
+        <attr format="boolean" name="ckPinchToZoom"/>
+
+        <attr format="float" name="ckZoom"/>
+
+        <attr format="enum" name="ckMethod">
+            <enum name="standard" value="0"/>
+            <enum name="still" value="1"/>
+
+            <!-- TODO: Set to unique value when feature added -->
+            <enum name="speed" value="0"/>
+        </attr>
+
+        <attr format="enum" name="ckPermissions">
+            <enum name="strict" value="0"/>
+            <enum name="lazy" value="1"/>
+            <enum name="picture" value="2"/>
+        </attr>
+
+        <attr format="integer" name="ckJpegQuality"/>
+
+        <attr format="enum" name="ckVideoQuality">
+            <enum name="max480p" value="0"/>
+            <enum name="max720p" value="1"/>
+            <enum name="max1080p" value="2"/>
+            <enum name="max2160p" value="3"/>
+            <enum name="highest" value="4"/>
+            <enum name="lowest" value="5"/>
+            <enum name="qvga" value="6"/>
+        </attr>
+
+        <attr format="boolean" name="ckCropOutput"/>
+
+        <attr format="integer" name="ckVideoBitRate"/>
+
+        <attr format="boolean" name="ckDoubleTapToToggleFacing"/>
+        <attr format="boolean" name="ckLockVideoAspectRatio"/>
+
+        <attr name="android:adjustViewBounds"/>
+
+    </declare-styleable>
+</resources>
