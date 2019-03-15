@@ -38,6 +38,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -79,6 +81,8 @@ public class Camera1 extends CameraImpl {
     private VideoCapturedCallback mVideoCallback;
     private final Object mCameraLock = new Object();
     private File mMediaRecorderOutputFile;
+    private int cameraWidth;
+    private int cameraHeight;
 
     Camera1(EventDispatcher eventDispatcher, PreviewImpl preview) {
         super(eventDispatcher, preview);
@@ -587,6 +591,8 @@ public class Camera1 extends CameraImpl {
 
                 this.mPreviewSize = size;
             }
+            //Camera.Size size = findBestPreviewResolution();
+            //this.mPreviewSize = new Size(size.width,size.height);
         }
 
         boolean invertPreviewSizes = (this.mCameraInfo.orientation + this.mDeviceOrientation) % 180 == 90;
@@ -602,6 +608,12 @@ public class Camera1 extends CameraImpl {
         Camera.getCameraInfo(0, cameraInfo);
         boolean isFrontCameraOnly = Camera.getNumberOfCameras() == 1 && cameraInfo.facing == 1;
         return isFrontCameraOnly;
+    }
+
+    @Override
+    void setCameraViewSize(int width, int height) {
+        this.cameraWidth = width;
+        this.cameraHeight = height;
     }
 
     @Nullable
@@ -1049,5 +1061,77 @@ public class Camera1 extends CameraImpl {
         }
 
         return new Rect(left - 1000, top - 1000, right - 1000, bottom - 1000);
+    }
+
+    public Camera.Size findBestPreviewResolution() {
+        Camera.Size defaultPreviewResolution = this.mCameraParameters.getPreviewSize();
+        List<Camera.Size> rawSupportedSizes = this.mCameraParameters.getSupportedPreviewSizes();
+        if (rawSupportedSizes == null) {
+            return defaultPreviewResolution;
+        } else {
+            List<Camera.Size> supportedPreviewResolutions = new ArrayList(rawSupportedSizes);
+            Collections.sort(supportedPreviewResolutions, new Comparator<Camera.Size>() {
+                public int compare(Camera.Size a, Camera.Size b) {
+                    int aPixels = a.height * a.width;
+                    int bPixels = b.height * b.width;
+                    if (bPixels < aPixels) {
+                        return -1;
+                    } else {
+                        return bPixels > aPixels ? 1 : 0;
+                    }
+                }
+            });
+            StringBuilder previewResolutionSb = new StringBuilder();
+            Iterator var6 = supportedPreviewResolutions.iterator();
+
+            while(var6.hasNext()) {
+                Camera.Size supportedPreviewResolution = (Camera.Size)var6.next();
+                previewResolutionSb.append(supportedPreviewResolution.width).append('x').append(supportedPreviewResolution.height).append(' ');
+            }
+
+            double screenAspectRatio = (double)(cameraWidth / cameraHeight);
+            Iterator it = supportedPreviewResolutions.iterator();
+
+            while(true) {
+                Camera.Size supportedPreviewResolution;
+                while(it.hasNext()) {
+                    supportedPreviewResolution = (Camera.Size)it.next();
+                    int width = supportedPreviewResolution.width;
+                    int height = supportedPreviewResolution.height;
+                    if (width * height >= 777600 && !equalRate(width, height, 1.33F)) {
+                        if (width == 1920) {
+                            return supportedPreviewResolution;
+                        }
+
+                        boolean isCandidatePortrait = width > height;
+                        int maybeFlippedWidth = isCandidatePortrait ? height : width;
+                        int maybeFlippedHeight = isCandidatePortrait ? width : height;
+                        double aspectRatio = (double)maybeFlippedWidth / (double)maybeFlippedHeight;
+                        double distortion = Math.abs(aspectRatio - screenAspectRatio);
+                        if (maybeFlippedWidth == cameraWidth && maybeFlippedHeight == cameraHeight) {
+                            return supportedPreviewResolution;
+                        }
+
+                        if (distortion > 0.15D) {
+                            it.remove();
+                        }
+                    } else {
+                        it.remove();
+                    }
+                }
+
+                if (!supportedPreviewResolutions.isEmpty()) {
+                    supportedPreviewResolution = (Camera.Size)supportedPreviewResolutions.get(0);
+                    return supportedPreviewResolution;
+                }
+
+                return defaultPreviewResolution;
+            }
+        }
+    }
+
+    public static boolean equalRate(int width, int height, float rate) {
+        float r = (float)width / (float)height;
+        return (double)Math.abs(r - rate) <= 0.2D;
     }
 }

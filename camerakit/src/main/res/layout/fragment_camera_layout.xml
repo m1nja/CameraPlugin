@@ -81,15 +81,15 @@
                 android:layout_marginRight="20dp">
                 <TextView
                     android:id="@+id/bt_hide_camera_open"
-                    android:layout_width="wrap_content"
+                    android:layout_width="37dp"
                     android:layout_height="match_parent"
                     android:text="一键隐藏"
                     android:gravity="center_horizontal"
                     android:textColor="@color/color_white"
                     android:textSize="7sp"
-                    android:drawableBottom="@drawable/ic_open_hide_camera"
-                    android:layout_marginBottom="5dp"
-                    />
+                    android:drawableTop="@drawable/ic_open_hide_camera"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center_vertical"/>
                 <Button
                     android:id="@+id/bt_hide_camera_notice"
                     android:layout_width="20dp"

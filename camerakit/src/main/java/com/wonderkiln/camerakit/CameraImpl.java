@@ -67,6 +67,8 @@ abstract class CameraImpl {
 
     abstract boolean frontCameraOnly();
 
+    abstract void setCameraViewSize(int width,int height);
+
     @Nullable
     abstract CameraProperties getCameraProperties();
 

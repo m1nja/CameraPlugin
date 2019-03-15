@@ -437,6 +437,10 @@ public class CameraView extends CameraViewLayout {
         return this.mCameraImpl != null ? this.mCameraImpl.getCaptureResolution() : null;
     }
 
+    public void setCameraViewSize(int width,int height) {
+        this.mCameraImpl.setCameraViewSize(width, height);
+    }
+
     private void requestPermissions(boolean requestCamera, boolean requestAudio) {
         Activity activity = null;
 

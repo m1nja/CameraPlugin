@@ -9,7 +9,7 @@
     <!-- 视频文件夹 -->
     <string name="Video">Video</string>
     <!-- 照片暗拍提示 -->
-    <string name="camera_hide_help_text_photo">点击一键隐藏按钮进入黑屏拍照，黑屏后可按音量键+进行拍照(不要手动锁屏)</string>
+    <string name="camera_hide_help_text_photo">点击一键隐藏按钮进入黑屏拍照，黑屏后可按音量键进行拍照</string>
     <!-- 视频暗拍提示 -->
-    <string name="camera_hide_help_text_video">点击开始视频拍摄后，可点击一键隐藏按钮进入黑屏录制</string>
+    <string name="camera_hide_help_text_video">点击开始视频拍摄后，可点击一键隐藏按钮进入黑屏录制(不要手动锁屏)</string>
 </resources>

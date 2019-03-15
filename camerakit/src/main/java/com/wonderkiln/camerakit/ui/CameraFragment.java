@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -197,6 +199,7 @@ public class CameraFragment extends BaseFragment{
     }
 
     private void initView(){
+        cameraView.setCameraViewSize(DensityUtil.screenWidthInPix(getActivity()), DensityUtil.screenHeightInPix(getActivity()));
         if(cameraType == CAMERA_TYPE_VIDEO){
             mHeaderBar.setVisibility(View.GONE);//隐藏底部菜单
             mCameraShutterButton.setVisibility(View.GONE);
@@ -215,7 +218,10 @@ public class CameraFragment extends BaseFragment{
             intentFilter.addAction(PhoneCallStateReceiver.CALL_STATE_ANSWER);
             getActivity().registerReceiver(phoneCallStateReceiver,intentFilter);
             cameraHideHelpText.setText(R.string.camera_hide_help_text_video);
+            canNotOpenVideoHideCapture();
         }else {
+            cameraView.setPermissions(2);//拍照不需要申请音频权限
+            cameraView.setMethod(CameraKit.Constants.METHOD_STILL);//设置相机拍摄方式为持续拍摄，避免画面拉伸 METHOD_STANDARD适用于单张拍摄
             tvMyCameraHint.setVisibility(View.VISIBLE);
             mCameraShutterButton.setVisibility(View.VISIBLE);
             mRecordShutterButton.setVisibility(View.GONE);
@@ -359,6 +365,7 @@ public class CameraFragment extends BaseFragment{
             mVideoTime.setText("00:00");
             mHandler.postAtTime(recordRunnable, mVideoTime, SystemClock.uptimeMillis() + 1000);
         }
+        canOpenVideoHideCapture();
     }
 
     private void onPicture(byte[] jpeg) {
@@ -520,6 +527,7 @@ public class CameraFragment extends BaseFragment{
     private void onGetVideo(){
         mCapturingVideo = false;
         mRecordShutterButton.setBackgroundResource(R.drawable.ic_video_start);
+        canNotOpenVideoHideCapture();
         mVideoTime.setVisibility(View.GONE);
         if(mRecordPath!=null){
             //创建缩略图,该方法只能获取384X512的缩略图，舍弃，使用源码中的获取缩略图方法
@@ -707,6 +715,34 @@ public class CameraFragment extends BaseFragment{
         if(cameraKitHideCaptureListener != null){
             cameraKitHideCaptureListener.onHideCaptureStart();
         }
+    }
+
+    /*
+    * 视频暗拍可以打开
+    * */
+    private void canOpenVideoHideCapture(){
+        mOpenHideCamera.setTextColor(Color.WHITE);
+        Drawable drawable = getActivity().getResources().getDrawable(
+                R.drawable.ic_open_hide_camera);
+        //这一步必须要做,否则不会显示.
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+                drawable.getMinimumHeight());
+        mOpenHideCamera.setCompoundDrawables(null, drawable, null, null);
+        mOpenHideCamera.setEnabled(true);
+    }
+
+    /*
+     * 视频暗拍不可以打开
+     * */
+    private void canNotOpenVideoHideCapture(){
+        mOpenHideCamera.setTextColor(Color.parseColor("#FF9E9E9E"));
+        Drawable drawable = getActivity().getResources().getDrawable(
+                R.drawable.ic_open_hide_camera_enable);
+        //这一步必须要做,否则不会显示.
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+                drawable.getMinimumHeight());
+        mOpenHideCamera.setCompoundDrawables(null, drawable, null, null);
+        mOpenHideCamera.setEnabled(false);
     }
 
     /*
