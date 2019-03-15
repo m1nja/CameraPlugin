@@ -737,11 +737,22 @@ public class Camera1 extends CameraImpl {
         boolean haveToReadjust = false;
         Parameters resolutionLess = this.mCamera.getParameters();
         if (this.getPreviewResolution() != null) {
-            this.mPreview.setPreviewParameters(this.getPreviewResolution().getWidth(), this.getPreviewResolution().getHeight(), this.mCameraParameters.getPreviewFormat());
-            this.mCameraParameters.setPreviewSize(this.getPreviewResolution().getWidth(), this.getPreviewResolution().getHeight());
-
+            int presizeWidth = this.getPreviewResolution().getWidth();
+            int presizeHeight = this.getPreviewResolution().getHeight();
+            this.mPreview.setPreviewParameters(presizeWidth, presizeHeight, this.mCameraParameters.getPreviewFormat());
+            this.mCameraParameters.setPreviewSize(presizeWidth, presizeHeight);
+            Log.d("---------", presizeWidth + "-----" + presizeHeight);
             try {
                 this.mCamera.setParameters(this.mCameraParameters);
+                if (mCamera.getParameters() != null) {
+                    Parameters parameters = mCamera.getParameters();
+                    if(parameters.getPreviewSize() != null){
+                        if(parameters.getPreviewSize().width < parameters.getPreviewSize().height) {
+                            this.mCameraParameters.setPreviewSize(presizeHeight, presizeWidth);
+                            this.mCamera.setParameters(this.mCameraParameters);
+                        }
+                    }
+                }
                 resolutionLess = this.mCameraParameters;
             } catch (Exception var9) {
                 this.notifyErrorListener(var9);
